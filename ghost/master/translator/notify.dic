@@ -1,0 +1,6 @@
+On_otherghostname {
+    ghost_list = IARRAY()
+    foreach reference; _r {
+        ghost_list ,= SPLIT(_r, CHR(1))[0]
+    }
+}

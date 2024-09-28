@@ -1,0 +1,18 @@
+OnInitialize {
+    if !ISVAR('from') {
+        from = "ja"
+    }
+    if !ISVAR('to') {
+        to = "en"
+    }
+    target = ""
+}
+
+OnBoot {
+    "\0\s[0]\![set,otherghosttalk,true]"
+}
+
+OnDestroy {
+    ERASEVAR('ghost_list')
+    ERASEVAR('target')
+}

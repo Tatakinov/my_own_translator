@@ -1,0 +1,6 @@
+charset,UTF-8
+
+type,ghost
+name,my_own_translator
+directory,my_own_translator
+

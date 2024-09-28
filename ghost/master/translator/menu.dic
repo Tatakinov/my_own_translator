@@ -1,0 +1,85 @@
+Language {
+    ("ja", "en", "zh-CN", "zh-TW", "ko", "de", "ru")
+}
+
+OnNOP {
+}
+
+OnMouseDoubleClick {
+    "\![raise,OnMenu]"
+}
+
+OnMenu {
+    "\_q\0"
+    --
+    case reference[0] {
+        when "Target" {
+            target = reference[1]
+        }
+        when "From" {
+            from = reference[1]
+        }
+        when "To" {
+            to = reference[1]
+        }
+    }
+    if target {
+        "Target: " + target + " / \q[Stop translate,OnMenu,Target,]\n"
+    }
+    else {
+        "\n"
+    }
+    --
+    "\q[Select target,OnSelectTarget]\n"
+    --
+    "\n"
+    --
+    "From: " + from + " / \q[Select From,OnSelectFrom]\n"
+    --
+    "\n"
+    --
+    "To:   " + to + " / \q[Select To,OnSelectTo]\n"
+    --
+    "\n"
+    --
+    "\q[Close,OnNOP]\n"
+    --
+    "\_q"
+}
+
+OnSelectTarget {
+    _s = "\_q\0"
+    foreach ghost_list; _g {
+        _g = REPLACE(_g, '"', '""')
+        _s += "\q[""%(_g)"",OnMenu,Target,""%(_g)""]\n"
+    }
+    _s
+    --
+    "\n"
+    --
+    "\q[Back,OnNOP]\n\_q"
+}
+
+OnSelectFrom {
+    _s = "\_q\0"
+    foreach Language; _l {
+        _s += "\q[%(_l),OnMenu,From,%(_l)] "
+    }
+    _s
+    --
+    "\n"
+    --
+    "\q[Back,OnMenu]\n\_q"
+}
+
+OnSelectTo {
+    _s = "\_q\0"
+    foreach Language; _l {
+        _s += "\q[%(_l),OnMenu,To,%(_l)] "
+    }
+    _s
+    --
+    "\n"
+    --
+    "\q[Back,OnMenu]\n\_q"
+}

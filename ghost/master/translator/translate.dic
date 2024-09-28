@@ -1,0 +1,142 @@
+TranslateURL {
+    "https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/"
+}
+
+OnKeep {
+    "\C"
+}
+
+Quote {
+    '"(""|[^"])*"'
+}
+
+InParentheses {
+    "(?:%(Quote)|\\\\|\\\]|(?!%(Quote)|\\\\|\\\]|\]).)*"
+}
+
+OnOtherGhostTalk {
+    if reference[1] == target {
+        _script = reference[4]
+        // []内の正規表現。
+        _p = "\[" + InParentheses + "\]"
+        // 変換後に残さないSakuraScriptはここで消す。
+        // \_!とか\_?には対応してない。
+        _script = RE_REPLACE(_script, "\\(s[0-9]|s%(_p)|i%(_p)|!%(_p)|4|5|6|7|8%(_p)|9|__w%(_p)|b[0-9]|b%(_p)|_b%(_p)|C|__v%(_p)|w[0-9]|_w%(_p)|__w%(_p)|x(%(_p))?|t|_q|_s|\*|a|\+|_\+|v|_v%(_p)|_V%(_p)|j|__t|__c|m%(_p))", "")
+        _script = Process1(_script)
+        "\0\s[0]\_q" + _script[1] + "\_q"
+    }
+}
+
+Translate {
+    _script = _argv[0]
+    _url = "%(TranslateURL)exec?text=%(STRENCODE(_script, 1, 'url'))&source=%(from)&target=%(to)"
+    FUNCTIONEX("saori/saori_curl.dll", _url)
+    return
+}
+
+Process1 {
+    _index = 0
+    _script = _argv[0]
+    _sentinel = _argv[1]
+    _pre = ""
+    _translated = IARRAY()
+    while 1 {
+        _pos = -1
+        _bs = STRSTR(_script, '\', 0)
+        _per = STRSTR(_script, '%', 0)
+        if _bs > -1 && _per > -1 {
+            if _bs > _per {
+                _pos = _per
+            }
+            else {
+                _pos = _bs
+            }
+        }
+        else {
+            if _bs > _per {
+                _pos = _bs
+            }
+            else {
+                _pos = _per
+            }
+        }
+        if _pos == -1 {
+            _pre += _script
+            _script = ""
+            break
+        }
+        _pre += SUBSTR(_script, 0, _pos)
+        _script = SUBSTR(_script, _pos, STRLEN(_script))
+        // \__qや\_?内部の処理だった場合はループを抜ける
+        if _sentinel && SUBSTR(_script, 0, STRLEN(_sentinel)) == _sentinel {
+            break
+        }
+        _pre += "${%(_index)}"
+        _ret = Process2(_script)
+        _script = _ret[0]
+        _translated ,= _ret[1]
+        _index = _index + 1
+    }
+    _output = Translate(_pre)
+    // あらかじめ置換しておいた部分を元に戻す
+    for _i = 0; _i < _index; _i++ {
+        // 翻訳しだいで${ 1}のように空白が入る場合に対処
+        _output = RE_REPLACE(_output, "\$\{ *%(_i) *\}", _translated[_i])
+    }
+    (_script, _output)
+    return
+}
+
+Process2 {
+    _script = _argv[0]
+    _p = "\[" + InParentheses + "\]"
+    // \e、\zはそれ以降のscript解釈をせずにreturnする。
+    if RE_SEARCH(_script, "^\\[ez]") {
+        ("", RE_GETSTR[0])
+        return
+    }
+    // 多分飛んでこないはずだけれど一応。
+    if RE_SEARCH(_script, '^%(month|day|hour|minute|second|username|selfname|selfname2|keroname|screenwidth|screenheight|exh|et|wronghour|ms|mz|ml|mc|mh|mt|me|mp|m\?|dms|lastghostname|lastobjectname|\*|property%(_p))') {
+        _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
+        (_script, RE_GETSTR[0])
+        return
+    }
+    // バルーンの制御部分は残す。
+    if RE_SEARCH(_script, "^\\(0|h|1|u|p[0-9]|p%(_p)|f%(_p)|\\|%|\-|n(%(_p))?|_n|c(%(_p))?)") {
+        _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
+        (_script, RE_GETSTR[0])
+        return
+    }
+    // qタグは選択肢を翻訳する。
+    if RE_SEARCH(_script, "^\\q\[((?:%(Quote)|\\\\|\\\]|(?!%(Quote)|\\\\|\\\]|\]|,).)*)%(InParentheses)\]") {
+        _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
+        // qタグ内のダブルクオートとかエスケープとかの処理は面倒いのでやってない。
+        _output = Translate(RE_GETSTR[1])
+        (_script, "\q[%(_output),OnKeep]")
+        return
+    }
+    // \__q、\_aは内部を翻訳する。
+    if RE_SEARCH(_script, "^\\(__q|_a)%(_p)") {
+        _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
+        _sentinel = "\" + RE_GETSTR[1]
+        _ret = Process1(_script, _sentinel)
+        _script = _ret[0]
+        _script = SUBSTR(_script, STRLEN(_sentinel), STRLEN(_script))
+        (_script, "%(_sentinel)[OnKeep]%(_ret[1])%(_sentinel)")
+        return
+    }
+    // \_!、\_?も内部を翻訳する。
+    // ただ、タグの意味を考えると
+    // 翻訳しないほうが良いのかもしれない。
+    if RE_SEARCH(_script, "^\\(_!|_\?)") {
+        _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
+        _sentinel = "\" + RE_GETSTR[1]
+        _ret = Process1(_script, _sentinel)
+        _script = _ret[0]
+        _script = SUBSTR(_script, STRLEN(_sentinel), STRLEN(_script))
+        (_script, "%(_sentinel)%(_ret[1])%(_sentinel)")
+        return
+    }
+    ("", "failed to translate.")
+}
+

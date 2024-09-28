@@ -1,0 +1,15 @@
+charset,UTF-8
+readme.charset,UTF-8
+
+type,ghost
+name,my_own_translator
+
+sakura.name,translator
+kero.name,None
+
+craftman,tatakinov
+craftmanw,タタキノフ
+
+shiori,yaya.dll
+
+sakura.seriko.alignmenttodesktop,free
