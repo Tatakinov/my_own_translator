@@ -20,7 +20,7 @@ OnOtherGhostTalk {
         // []内の正規表現。
         _p = "\[" + InParentheses + "\]"
         // 変換後に残さないSakuraScriptはここで消す。
-        // \_!とか\_?には対応してない。
+        // \_!とか\_?の中のSakuraScriptも消してしまうのが改善ポイント。
         _script = RE_REPLACE(_script, "\\(s[0-9]|s%(_p)|i%(_p)|!%(_p)|4|5|6|7|8%(_p)|9|__w%(_p)|b[0-9]|b%(_p)|_b%(_p)|C|__v%(_p)|w[0-9]|_w%(_p)|__w%(_p)|x(%(_p))?|t|_q|_s|\*|-|a|\+|_\+|v|_v%(_p)|_V%(_p)|j|__t|__c|m%(_p))", "")
         _script = Process1(_script)
         "\0\s[0]\_q" + _script[1] + "\_q"
