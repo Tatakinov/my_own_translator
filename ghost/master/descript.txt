@@ -13,3 +13,5 @@ craftmanw,タタキノフ
 shiori,yaya.dll
 
 sakura.seriko.alignmenttodesktop,free
+
+homeurl,https://raw.githubusercontent.com/Tatakinov/my_own_translator/main/
