@@ -4,7 +4,7 @@ readme.charset,UTF-8
 type,ghost
 name,my_own_translator
 
-sakura.name,translator
+sakura.name,my_own_translator
 kero.name,None
 
 craftman,tatakinov
