@@ -1,0 +1,16 @@
+OnUpdateBegin {
+    '\0Check update...'
+}
+
+OnUpdateComplete {
+    if reference[0] == 'none' {
+        '\0None.'
+    }
+    else {
+        '\0Complete.'
+    }
+}
+
+OnUpdateFailure {
+    "\0Failed: %(reference[0])"
+}
