@@ -9,9 +9,9 @@ curlを使って*UTF-8なテキストデータを返すURL*からテキストを
 ```
 Argument0: URL
 
-Result: 取得したデータ
+Result: 取得に成功していたらOK、失敗していたら理由
+ValueN: 帰ってきたデータを改行で分割した配列
 ```
-
 ## 使用ライブラリ
 
 - libcurl

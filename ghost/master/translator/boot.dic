@@ -15,4 +15,5 @@ OnBoot {
 OnDestroy {
     ERASEVAR('ghost_list')
     ERASEVAR('target')
+    ERASEVAR('correspondence')
 }
