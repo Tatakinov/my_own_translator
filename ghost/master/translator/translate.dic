@@ -35,7 +35,7 @@ OnOtherGhostTalk {
         Parse(reference[4])
         Translate
         _translated = Build
-        _translated
+        '\_q' + _translated + '\_q'
         return
     }
 }
