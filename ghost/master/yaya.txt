@@ -8,4 +8,6 @@ charset.extension, UTF-8
 
 include, system_config.txt
 
+iolog, off
+
 dicdir, translator
