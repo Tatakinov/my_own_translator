@@ -9,5 +9,6 @@ charset.extension, UTF-8
 include, system_config.txt
 
 iolog, off
+iolog.filter.keyword,On
 
 dicdir, translator

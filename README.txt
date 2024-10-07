@@ -18,7 +18,7 @@ libcurl     | curl      | https://curl.se/
 
 ## Mechanism
 
-Translate "\0This \q[apple,OnFoo] is blue." from en to ja.
+Translate "\0This \q[apple,OnFoo] is blue.\e" from en to ja.
 
 ```
 \0This \q[apple,OnFoo] is blue.\e
@@ -28,21 +28,21 @@ Translate "\0This \q[apple,OnFoo] is blue." from en to ja.
 
 ```
 ----
-${0} = ${1}This ${2} is blue.${4}
-${1} = \0
-${2} = \q[${3},OnKeep]
-${3} = apple
-${4} = \e
+<0> = <1>This <2> is blue.<4>
+<1> = \0
+<2> = \q[<3>,OnKeep]
+<3> = apple
+<4> = \e
 ```
 
-↓ translate ${0}, ${3}
+↓ translate <0>, <3>
 
 ```
-${0} = ${1}この ${2} は 青色です。${4}
-${1} = \0
-${2} = \q[${3},OnKeep]
-${3} = りんご
-${4} = \e
+<0> = <1>この <2> は 青色です。<4>
+<1> = \0
+<2> = \q[<3>,OnKeep]
+<3> = りんご
+<4> = \e
 ```
 
 ↓ build

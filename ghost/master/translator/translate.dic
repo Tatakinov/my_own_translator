@@ -1,5 +1,5 @@
 TranslateURL {
-    "https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/"
+    'https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/'
 }
 
 False {
@@ -16,7 +16,7 @@ Max {
 }
 
 OnKeep {
-    "\C"
+    '\C'
 }
 
 Quote {
@@ -30,6 +30,7 @@ InParentheses {
 OnOtherGhostTalk {
     if reference[1] == target {
         parse_data = IARRAY()
+        // <0>を翻訳対象に入れる
         correspondence = IARRAY()
         correspondence ,= 0
         Parse(reference[4])
@@ -44,15 +45,11 @@ Parse {
     _ref = 0
     _script = _argv[0]
     _index_stack = IARRAY()
-    _index_stack ,= -1
     _index = 0
     _sentinel = False
     _p = "\[" + InParentheses + "\]"
-    _unnecessary_tag = "\\(s[0-9]|s%(_p)|i%(_p)|!%(_p)|4|5|6|7|8%(_p)|9|__w%(_p)|b[0-9]|b%(_p)|_b%(_p)|C|__v%(_p)|w[0-9]|_w%(_p)|__w%(_p)|x(%(_p))?|t|_q|_s|\*|-|a|\+|_\+|v|_v%(_p)|_V%(_p)|j|__t|__c|m%(_p))"
+    _ignore_tag = "\\(s[0-9]|s%(_p)|i%(_p)|!%(_p)|4|5|6|7|8%(_p)|9|__w%(_p)|b[0-9]|b%(_p)|_b%(_p)|C|__v%(_p)|w[0-9]|_w%(_p)|__w%(_p)|x(%(_p))?|t|_q|_s|\*|-|a|\+|_\+|v|_v%(_p)|_V%(_p)|j|__t|__c|m%(_p))"
     while 1 {
-        if _index < 0 {
-            break
-        }
         _pos = -1
         _bs = STRSTR(_script, '\', 0)
         _per = STRSTR(_script, '%', 0)
@@ -75,13 +72,11 @@ Parse {
         if _pos == -1 {
             parse_data[_index] += _script
             _script = ""
-            _index = _index_stack[ARRAYSIZE(_index_stack) - 1]
-            _index_stack[ARRAYSIZE(_index_stack) - 1] = IARRAY()
             break
         }
         parse_data[_index] += SUBSTR(_script, 0, _pos)
         _script = SUBSTR(_script, _pos, STRLEN(_script))
-        // \__qや\_?内部の処理だった場合はループを抜ける
+        // \__qや\_?内部の処理だった場合はスタックをpopする
         if _sentinel && SUBSTR(_script, 0, STRLEN(_sentinel)) == _sentinel {
             _script = SUBSTR(_script, STRLEN(_sentinel), STRLEN(_script))
             _sentinel = False
@@ -91,13 +86,12 @@ Parse {
         }
         if RE_SEARCH(_script, '^\\[ez]') {
             _script = ""
-            _index = -1
-            continue
+            break
         }
-        if RE_SEARCH(_script, '^' + _unnecessary_tag) {
+        if RE_SEARCH(_script, '^' + _ignore_tag) {
             if _sentinel == '\_?' || _sentinel == '\_!' {
                 _ref = Max(_ref, _index) + 1
-                parse_data[_index] += "${%(_ref)}"
+                parse_data[_index] += "<%(_ref)>"
                 parse_data[_ref] = RE_GETSTR(0)
             }
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
@@ -107,7 +101,7 @@ Parse {
         if RE_SEARCH(_script, '^%(month|day|hour|minute|second|username|selfname|selfname2|keroname|screenwidth|screenheight|exh|et|wronghour|ms|mz|ml|mc|mh|mt|me|mp|m\?|dms|lastghostname|lastobjectname|\*|property%(_p))') {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "${%(_ref)}"
+            parse_data[_index] += "<%(_ref)>"
             parse_data[_ref] = RE_GETSTR[0]
             continue
         }
@@ -115,7 +109,7 @@ Parse {
         if RE_SEARCH(_script, "^\\(0|h|1|u|p[0-9]|p%(_p)|f%(_p)|\\|%|n(%(_p))?|_n|c(%(_p))?|_l%(_p)|_u%(_p)|_m%(_p)|&%(_p))") {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "${%(_ref)}"
+            parse_data[_index] += "<%(_ref)>"
             parse_data[_ref] = RE_GETSTR[0]
             continue
         }
@@ -124,8 +118,8 @@ Parse {
             // qタグ内のダブルクオートとかエスケープとかの処理は面倒いのでやってない。
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "${%(_ref)}"
-            parse_data[_ref] = "\q[${%(_ref + 1)},OnKeep]"
+            parse_data[_index] += "<%(_ref)>"
+            parse_data[_ref] = "\q[<%(_ref + 1)>,OnKeep]"
             _ref += 1
             parse_data[_ref] = RE_GETSTR[1]
             correspondence ,= _ref
@@ -136,30 +130,28 @@ Parse {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _sentinel = "\" + RE_GETSTR[1]
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "${%(_ref)}"
-            parse_data[_ref] = "%(_sentinel)[OnKeep]${%(_ref + 1)}%(_sentinel)"
+            parse_data[_index] += "<%(_ref)>"
+            parse_data[_ref] = "%(_sentinel)[OnKeep]<%(_ref + 1)>%(_sentinel)"
             _ref += 1
             correspondence ,= _ref
             _index_stack ,= _index
-            _index = Max(_index, _ref) + 1
+            _index = _ref
             continue
         }
         // \_!、\_?も内部を翻訳する。
-        // ただ、タグの意味を考えると
-        // 翻訳しないほうが良いのかもしれない。
         if RE_SEARCH(_script, "^\\(_!|_\?)") {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _sentinel = "\" + RE_GETSTR[1]
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "${%(_ref)}"
-            parse_data[_ref] = "%(_sentinel)${%(_ref + 1)}%(_sentinel)"
+            parse_data[_index] += "<%(_ref)>"
+            parse_data[_ref] = "%(_sentinel)<%(_ref + 1)>%(_sentinel)"
             _ref += 1
             correspondence ,= _ref
             _index_stack ,= _index
-            _index = Max(_index, _ref) + 1
+            _index = _ref
             continue
         }
-        // おそらくエスケープ忘れ
+        // おそらくエスケープ忘れなのでエスケープする
         _chr = SUBSTR(_script, 0, 1)
         parse_data[_index] += '\' + _chr
         _script = SUBSTR(_script, 1, STRLEN(_script))
@@ -171,8 +163,9 @@ Translate {
     LOGGING("Translate.")
     LOGGING(parse_data)
     _strict_correspondence = IARRAY()
+    // 空白と<N>だけで構成されるものは翻訳対象から外す
     foreach correspondence; _c {
-        if !RE_SEARCH(parse_data[_c], '\A( *\$\{ *\d+ *\} *)*\z') {
+        if !RE_SEARCH(parse_data[_c], '\A( *<\d+> *)*\z') {
             _strict_correspondence ,= _c
         }
     }
@@ -180,9 +173,11 @@ Translate {
         return
     }
     _text = ""
+    // 改行でjoinする
     foreach _strict_correspondence; _c {
         _text += "%0D%0A" + STRENCODE(parse_data[_c], 1, 'url')
     }
+    // 先頭のCRLFを無視
     _text = SUBSTR(_text, 6, STRLEN(_text))
     _url = "%(TranslateURL)exec?text=%(_text)&source=%(from)&target=%(to)"
     _ = FUNCTIONEX("saori/saori_curl.dll", _url)
@@ -193,10 +188,8 @@ Translate {
 }
 
 Build {
-    for _i = ARRAYSIZE(parse_data) - 1; _i >= 0; _i-- {
-        for _j = _i + 1; _j < ARRAYSIZE(parse_data); _j++ {
-            parse_data[_i] = RE_REPLACE(parse_data[_i], "\$\{ *%(_j) *\}", parse_data[_j])
-        }
+    for _i = 1; _i < ARRAYSIZE(parse_data); _i++ {
+        parse_data[0] = RE_REPLACE(parse_data[0], "< *%(_i) *>", parse_data[_i])
     }
     parse_data[0]
     return
