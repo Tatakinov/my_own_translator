@@ -1,10 +1,10 @@
-README.txt786b58a9f748a8adca6b36302d973382size=1033date=2024-10-06T19:53:33
+README.txt5c82a9aa6d24d2eb290ab640c449d48fsize=1015date=2024-10-07T21:34:51
 install.txt3c7ec2d54d0639ab597575ad0d6df9a2size=84date=2024-09-29T10:42:48
 shell/master/surfaces.txtec33309c85e9be1d9b2a0eae280406cesize=14date=2024-09-29T10:42:48
 shell/master/surface10.png3802001566a03b1de10569fe5fb31240size=311date=2024-09-29T10:42:48
 shell/master/surface0.png8c99db320d8ac1fa46be894240bdfa0esize=25904date=2024-09-29T10:42:48
 shell/master/descript.txtb66c196f6e2732b3294809107fb21368size=116date=2024-09-29T10:42:48
-ghost/master/yaya.txt4953bfa7e1fbd22d655c6e13eec9a52fsize=213date=2024-10-06T19:41:34
+ghost/master/yaya.txtfe901fbdd0492e680f2000e36e6d0753size=237date=2024-10-07T21:34:51
 ghost/master/yaya.dllfde7d3a9493076e29f43a8e757bf1231size=880640date=2024-09-29T10:42:48
 ghost/master/system_config.txt0868241bb617c7c18013e2c024d18dd9size=18date=2024-09-29T10:42:48
 ghost/master/readme.txtb036c5d769e257d9677e0e506f41f6e1size=2442date=2024-09-29T10:42:48
@@ -16,7 +16,7 @@ ghost/master/yaya_base/optional.dicff4da728a656a8aa6a38939e654c51f2size=9953d
 ghost/master/yaya_base/config.dicd07874f4b1ba03ba111df8f2fa3cd6dbsize=2592date=2024-09-29T10:42:48
 ghost/master/yaya_base/compatible.dic4f8b1e8c8c08dc44e70b1bd4f52a1affsize=4297date=2024-09-29T10:42:48
 ghost/master/yaya_base/_loading_order.txt9c350c2c9c08f635bff5eaae149af8c8size=103date=2024-09-29T10:42:48
-ghost/master/translator/translate.dic1c8504341ada61aabb58d1311c30797bsize=6739date=2024-10-06T19:59:47
+ghost/master/translator/translate.dic01d5594f5a4460dc55e5092ded5e0508size=6455date=2024-10-07T21:34:51
 ghost/master/translator/boot.dic447f892691d29996f4e5dbbe8a907afasize=278date=2024-10-06T19:42:16
 ghost/master/translator/update.dicc216286306aaf3d2cf94f6c67d8df3d7size=212date=2024-09-30T21:17:27
 ghost/master/translator/notify.dic83b05cb9b4e2aefbfe8dbb1af7460487size=125date=2024-09-29T10:42:48
