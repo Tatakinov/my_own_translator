@@ -92,7 +92,7 @@ Parse {
             if _sentinel == '\_?' || _sentinel == '\_!' {
                 _ref = Max(_ref, _index) + 1
                 parse_data[_index] += "<%(_ref)>"
-                parse_data[_ref] = RE_GETSTR(0)
+                parse_data[_ref] = RE_GETSTR[0]
             }
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             continue
