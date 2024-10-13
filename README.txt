@@ -8,7 +8,7 @@ The end of person who was not satisfied with just the functionality of a certain
 
 Since ↑ doesn't translate choices, I created a ghost that can translate them in a nice way.
 
-However, translation takes longer than it.
+Additionally, I have tried to show the text as closely as possible to the original.
 
 ## Library
 
