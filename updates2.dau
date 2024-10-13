@@ -1,4 +1,4 @@
-README.txt5c82a9aa6d24d2eb290ab640c449d48fsize=1015date=2024-10-07T21:34:51
+README.txtc54c0987c749394294a1a72d5f2b6afdsize=1050date=2024-10-13T17:46:56
 install.txt3c7ec2d54d0639ab597575ad0d6df9a2size=84date=2024-09-29T10:42:48
 shell/master/surfaces.txtec33309c85e9be1d9b2a0eae280406cesize=14date=2024-09-29T10:42:48
 shell/master/surface10.png3802001566a03b1de10569fe5fb31240size=311date=2024-09-29T10:42:48
@@ -16,12 +16,12 @@ ghost/master/yaya_base/optional.dicff4da728a656a8aa6a38939e654c51f2size=9953d
 ghost/master/yaya_base/config.dicd07874f4b1ba03ba111df8f2fa3cd6dbsize=2592date=2024-09-29T10:42:48
 ghost/master/yaya_base/compatible.dic4f8b1e8c8c08dc44e70b1bd4f52a1affsize=4297date=2024-09-29T10:42:48
 ghost/master/yaya_base/_loading_order.txt9c350c2c9c08f635bff5eaae149af8c8size=103date=2024-09-29T10:42:48
-ghost/master/translator/translate.dic9872569d970b329a64b1513a69d22f35size=6455date=2024-10-08T21:20:05
-ghost/master/translator/boot.dic447f892691d29996f4e5dbbe8a907afasize=278date=2024-10-06T19:42:16
+ghost/master/translator/translate.dic017d2d329681f04b408d6fb5758c292esize=6699date=2024-10-13T17:48:40
 ghost/master/translator/update.dicc216286306aaf3d2cf94f6c67d8df3d7size=212date=2024-09-30T21:17:27
 ghost/master/translator/notify.dic83b05cb9b4e2aefbfe8dbb1af7460487size=125date=2024-09-29T10:42:48
 ghost/master/translator/menu.dice8fb865486faac307eccf85ca2243299size=1324date=2024-09-29T10:42:48
-ghost/master/saori/README.md826471364032d9ec782142a9b6c83aebsize=380date=2024-10-06T19:47:38
+ghost/master/translator/boot.dic447f892691d29996f4e5dbbe8a907afasize=278date=2024-10-06T19:42:16
 ghost/master/saori/saori_curl.dllb687e1573e303ef2941723f3eb78b226size=2391266date=2024-10-06T19:26:26
+ghost/master/saori/README.md826471364032d9ec782142a9b6c83aebsize=380date=2024-10-06T19:47:38
 ghost/master/saori/LICENSE1b2117d066d7b5c8267c852e9d322b7bsize=1049date=2024-09-29T10:42:48
 ghost/master/saori/COPYING.libcurl.txteed2e5088e1ac619c9a1c747da291d75size=1088date=2024-09-29T10:42:48
