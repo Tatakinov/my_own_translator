@@ -38,7 +38,7 @@ Translate "\0This \q[apple,OnFoo] is blue.\e" from en to ja.
 ↓ translate <0>, <3>
 
 ```
-<0> = <1>この <2> は 青色です。<4>
+<0> = <1>この<2>は青色です。<4>
 <1> = \0
 <2> = \q[<3>,OnKeep]
 <3> = りんご
@@ -48,7 +48,7 @@ Translate "\0This \q[apple,OnFoo] is blue.\e" from en to ja.
 ↓ build
 
 ```
-\0この \q[りんご,OnKeep] は 青色です。\e
+\0この\q[りんご,OnKeep]は青色です。\e
 ```
 
 cf. OnKeep -> \C
