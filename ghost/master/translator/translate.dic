@@ -1,9 +1,26 @@
-TranslateURL {
-    'https://script.google.com/macros/s/AKfycbweJFfBqKUs5gGNnkV2xwTZtZPptI6ebEhcCU2_JvOmHwM2TCk/'
+ConfigPath {
+    "%(SHIORI3FW.Path)model/%(_argv[0])/config.yml"
 }
 
 False {
     0
+}
+
+Generate {
+    _id = _argv[0]
+    "###%(_id)@@@"
+}
+
+RegGenerate {
+    _str = '##+ *'
+    if _argc {
+        _str += _argv[0]
+    }
+    else {
+        _str += '\d+'
+    }
+    _str += ' *@@+'
+    _str
 }
 
 Max {
@@ -33,12 +50,22 @@ OnOtherGhostTalk {
         // <0>を翻訳対象に入れる
         correspondence = IARRAY()
         correspondence ,= 0
-        Parse(reference[4])
-        Translate
-        _translated = Build
-        '\_q' + _translated + '\_q'
+        _ = Parse(reference[4])
+        _ret = Translate
+    }
+}
+
+OnSecondChange {
+    _result = TOINT(FUNCTIONEX('saori/call_translator.dll', 'result'))
+    if _result == -1 {
         return
     }
+    for _i = 0; _i < _result; _i++ {
+        parse_data[strict_correspondence[_i]] = valueex[_i]
+    }
+    _translated = Build
+    '\_q' + _translated + '\_q'
+    return
 }
 
 Parse {
@@ -102,7 +129,7 @@ Parse {
         if RE_SEARCH(_script, '^%(month|day|hour|minute|second|username|selfname|selfname2|keroname|screenwidth|screenheight|exh|et|wronghour|ms|mz|ml|mc|mh|mt|me|mp|m\?|dms|lastghostname|lastobjectname|\*|property%(_p))') {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "<%(_ref)>"
+            parse_data[_index] += Generate(_ref)
             parse_data[_ref] = RE_GETSTR[0]
             continue
         }
@@ -110,7 +137,7 @@ Parse {
         if RE_SEARCH(_script, "^\\(0|h|1|u|p[0-9]|p%(_p)|f%(_p)|\\|%|n(%(_p))?|_n|c(%(_p))?|_l%(_p)|_u%(_p)|_m%(_p)|&%(_p))") {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "<%(_ref)>"
+            parse_data[_index] += Generate(_ref)
             parse_data[_ref] = RE_GETSTR[0]
             continue
         }
@@ -119,8 +146,8 @@ Parse {
             // qタグ内のダブルクオートとかエスケープとかの処理は面倒いのでやってない。
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "<%(_ref)>"
-            parse_data[_ref] = "\q[<%(_ref + 1)>,OnKeep]"
+            parse_data[_index] += Generate(_ref)
+            parse_data[_ref] = "\q[%(Generate(_ref + 1)),OnKeep]"
             _ref += 1
             parse_data[_ref] = RE_GETSTR[1]
             correspondence ,= _ref
@@ -131,8 +158,8 @@ Parse {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _sentinel = "\" + RE_GETSTR[1]
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "<%(_ref)>"
-            parse_data[_ref] = "%(_sentinel)[OnKeep]<%(_ref + 1)>%(_sentinel)"
+            parse_data[_index] += Generate(_ref)
+            parse_data[_ref] = "%(_sentinel)[OnKeep]%(Generate(_ref + 1))%(_sentinel)"
             _ref += 1
             correspondence ,= _ref
             _index_stack ,= _index
@@ -145,8 +172,8 @@ Parse {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _sentinel = "\" + RE_GETSTR[1]
             _ref = Max(_ref, _index) + 1
-            parse_data[_index] += "<%(_ref)>"
-            parse_data[_ref] = "%(_sentinel)<%(_ref + 1)>%(_sentinel)"
+            parse_data[_index] += Generate(_ref)
+            parse_data[_ref] = "%(_sentinel)%(Generate(_ref + 1))%(_sentinel)"
             _ref += 1
             //ここをアンコメントすれば翻訳対象に含められる。
             //correspondence ,= _ref
@@ -162,38 +189,56 @@ Parse {
     return
 }
 
+// <1><2><3>...<N> blah blah blah => <N+1> blah blah blah
+Summarize {
+    foreach _argv; _i {
+        _text = parse_data[_i]
+        while 1 {
+            _replaced = RE_REPLACE(_text, "%(RegGenerate)( *%(RegGenerate))+", Generate(ARRAYSIZE(parse_data)), 1)
+            if _text == _replaced {
+                break
+            }
+            parse_data ,= RE_GETSTR[0]
+            _text = _replaced
+        }
+        parse_data[_i] = _text
+    }
+}
+
 Translate {
     LOGGING("Translate.")
     LOGGING(parse_data)
-    _strict_correspondence = IARRAY()
+    strict_correspondence = IARRAY()
     // 空白と<N>だけで構成されるものは翻訳対象から外す
     foreach correspondence; _c {
-        if !RE_SEARCH(parse_data[_c], '\A( *<\d+> *)*\z') {
-            _strict_correspondence ,= _c
+        if !RE_SEARCH(parse_data[_c], '\A( *%(RegGenerate) *)*\z') {
+            strict_correspondence ,= _c
         }
     }
-    if ARRAYSIZE(_strict_correspondence) == 0 {
+    if ARRAYSIZE(strict_correspondence) == 0 {
         return
     }
-    _text = ""
-    // 改行でjoinする
-    foreach _strict_correspondence; _c {
-        _text += "%0D%0A" + STRENCODE(parse_data[_c], 1, 'url')
+    _text = IARRAY()
+    Summarize(strict_correspondence)
+    foreach strict_correspondence; _c {
+        _text ,= parse_data[_c]
     }
-    // 先頭のCRLFを無視
-    _text = SUBSTR(_text, 6, STRLEN(_text))
-    _url = "%(TranslateURL)exec?text=%(_text)&source=%(from)&target=%(to)"
-    _ = FUNCTIONEX("saori/saori_curl.dll", _url)
-    for _i = 0; _i < ARRAYSIZE(valueex); _i++ {
-        parse_data[_strict_correspondence[_i]] = valueex[_i]
-    }
+    _path = ConfigPath('ja-en')
+    _result = FUNCTIONEX('saori/call_translator.dll', 'call', _path, _text)
+    _result
     return
 }
 
 Build {
+    // replace Summarize
     for _i = 1; _i < ARRAYSIZE(parse_data); _i++ {
-        parse_data[0] = RE_REPLACE(parse_data[0], "< *%(_i) *>", parse_data[_i])
+        parse_data[0] = RE_REPLACE(parse_data[0], RegGenerate(_i), parse_data[_i])
     }
+    // replace Parse
+    for _i = 1; _i < ARRAYSIZE(parse_data); _i++ {
+        parse_data[0] = RE_REPLACE(parse_data[0], RegGenerate(_i), parse_data[_i])
+    }
+    // because of Summarize
     parse_data[0]
     return
 }
