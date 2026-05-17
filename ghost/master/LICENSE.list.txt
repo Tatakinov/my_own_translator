@@ -1,0 +1,28 @@
+ssplit-cpp: Apache 2.0
+    nonbreaking_prefix: LGPL 2.1
+marian-fork: MIT
+    CLI: 3-Clause BSD
+    cnpy: MIT
+    faiss: MIT
+    FBGEMM: 3-Clause BSD
+    half_float: 3-Clause BSD
+    intgemm: MIT
+    mio: MIT
+    onnx: MIT
+    pathie-cpp: 2-Clause BSD
+    phf: MIT
+    ruy: Apache 2.0
+    sentencepiece: Apache 2.0
+    simd_utils: 2-Clause BSD
+    spdlog: MIT
+    yaml-cpp: MIT
+    zlib: zlib
+    zstr: MIT
+
+libgcc: Limited GPL
+libgfortran: Limited GPL
+liblapack: 3-Clause BSD
+libquadmath: Limited GPL
+libwinpthread: MIT & 3-Clause-Clear BSD
+libopenblas: 3-Clause BSD
+pcre2: 3-Clause BSD with PCRE2 Exception
