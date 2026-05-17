@@ -17,4 +17,10 @@ OnDestroy {
     ERASEVAR('target')
     ERASEVAR('correspondence')
     ERASEVAR('strict_correspondence')
+    ERASEVAR('translation_list')
+    ERASEVAR('lang')
+}
+
+OnLanguageChange {
+    lang = _argv[0]
 }

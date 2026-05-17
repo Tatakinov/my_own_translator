@@ -1,85 +1,155 @@
 Language {
-    ("ja", "en", "zh-CN", "zh-TW", "ko", "de", "ru")
+    ('ja', 'en', 'zh-CN', 'zh-TW', 'ko', 'de', 'ru')
 }
 
 OnNOP {
 }
 
 OnMouseDoubleClick {
-    "\![raise,OnMenu]"
+    '\![raise,OnMenu]'
 }
 
 OnMenu {
-    "\_q\0"
+    '\_q\0'
     --
     case reference[0] {
-        when "Target" {
+        when 'Target' {
             target = reference[1]
         }
-        when "From" {
+        when 'From' {
             from = reference[1]
         }
-        when "To" {
+        when 'To' {
             to = reference[1]
         }
     }
     if target {
-        "Target: " + target + " / \q[Stop translate,OnMenu,Target,]\n"
+        'Target: ' + target + ' / \q[Stop translate,OnMenu,Target,]\n'
     }
     else {
-        "\n"
+        '\n'
     }
     --
-    "\q[Select target,OnSelectTarget]\n"
+    '\q[Select target,OnSelectTarget]\n'
     --
-    "\n"
+    '\n'
     --
-    "From: " + from + " / \q[Select From,OnSelectFrom]\n"
+    'From: ' + from + ' / \q[Select From,OnSelectFrom]\n'
     --
-    "\n"
+    '\n'
     --
-    "To:   " + to + " / \q[Select To,OnSelectTo]\n"
+    'To:   ' + to + ' / \q[Select To,OnSelectTo]\n'
     --
-    "\n"
+    '\n'
     --
-    "\q[Close,OnNOP]\n"
+    foreach Validate; _x {
+        "Caution: model %(_x) not found. Please download it.\n"
+        --
+        "\q[How to download,OnHowToDownload,%(_x)]\n"
+        --
+        '\n'
+    }
     --
-    "\_q"
+    '\n'
+    --
+    '\q[Close,OnNOP]\n'
+    --
+    '\_q'
 }
 
 OnSelectTarget {
-    _s = "\_q\0"
+    _s = '\_q\0'
     foreach ghost_list; _g {
-        _g = REPLACE(_g, '"', '""')
+        _g = REPLACE(_g, ''', '''')
         _s += "\q[""%(_g)"",OnMenu,Target,""%(_g)""]\n"
     }
     _s
     --
-    "\n"
+    '\n'
     --
-    "\q[Back,OnNOP]\n\_q"
+    '\q[Back,OnNOP]\n\_q'
 }
 
 OnSelectFrom {
-    _s = "\_q\0"
+    _s = '\_q\0'
     foreach Language; _l {
         _s += "\q[%(_l),OnMenu,From,%(_l)] "
     }
     _s
     --
-    "\n"
+    '\n'
     --
-    "\q[Back,OnMenu]\n\_q"
+    '\q[Back,OnMenu]\n\_q'
 }
 
 OnSelectTo {
-    _s = "\_q\0"
+    _s = '\_q\0'
     foreach Language; _l {
         _s += "\q[%(_l),OnMenu,To,%(_l)] "
     }
     _s
     --
-    "\n"
+    '\n'
     --
-    "\q[Back,OnMenu]\n\_q"
+    '\q[Back,OnMenu]\n\_q'
+}
+
+OnHowToDownload {
+    _lang = _argv[0]
+    '\_q\0'
+    --
+    if lang == 'Japanese' || lang == 'japanese' || lang == 'ja' {
+        '1. https://mozilla.github.io/translations/ へアクセス\n'
+        --
+        '2. Firefox Models をクリック\n'
+        --
+        '3. 翻訳したい言語のところまでスクロール\n'
+        --
+        "4. %(_lang) をクリック\n"
+        --
+        '5. model.*.bin(.gz) をダウンロード\n'
+        --
+        '6-1. vocab.*.spm(.gz) をダウンロード\n'
+        --
+        '6-2. もしくは、srcvocab.*.spm(.gz) と trgvocab.*.spm(.gz) をダウンロード\n'
+        --
+        '7. ダウンロードした *.gz を展開\n'
+        --
+        "8. model.*.bin を /path/to/my_own_translator/ghost/master/model/%(_lang)/model.bin へコピー\n"
+        --
+        "9-1. vocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm へ、さらにvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm へコピー\n"
+        --
+        "9-2. もしくは、srcvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm へ、trgvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm へコピー\n"
+        --
+        "10. /path/to/my_own_translator/ghost/master/config.yml を /path/to/my_own_translator/model/%(_lang)/config.yml へコピー\n"
+        --
+        '\nクリックで閉じる\x'
+    }
+    else {
+        '1. Access https://mozilla.github.io/translations/\n'
+        --
+        '2. Click Firefox Models\n'
+        --
+        '3. Scroll to language you want to translate\n'
+        --
+        "4. Click %(_lang)\n"
+        --
+        '5. Download model.*.bin(.gz)\n'
+        --
+        '6-1. Download vocab.*.spm(.gz)\n'
+        --
+        '6-2. otherwise, Download srcvocab.*.spm(.gz) and trgvocab.*.spm(.gz)\n'
+        --
+        '7. Expand *.gz you downloaded\n'
+        --
+        "8. Copy model.*.bin to /path/to/my_own_translator/ghost/master/model/%(_lang)/model.bin\n"
+        --
+        "9-1. Copy vocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm and Copy vocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm\n"
+        --
+        "9-2. otherwise, Copy srcvocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm and Copy trgvocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm\n"
+        --
+        "10. Copy /path/to/my_own_translator/ghost/master/config.yml to /path/to/my_own_translator/model/%(_lang)/config.yml\n"
+        --
+        '\nClick to close\x'
+    }
 }

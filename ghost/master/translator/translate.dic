@@ -2,6 +2,24 @@ ConfigPath {
     "%(SHIORI3FW.Path)model/%(_argv[0])/config.yml"
 }
 
+Validate {
+    _list = IARRAY()
+    if from == 'en' || to == 'en' {
+        _list ,= "%(from)-%(to)"
+    }
+    else {
+        _list ,= "%(from)-en"
+        _list ,= "en-%(to)"
+    }
+    _ret = IARRAY()
+    foreach _list; _x {
+        if FSIZE(ConfigPath(_x)) < 0 {
+            _ret ,= _x
+        }
+    }
+    _ret
+}
+
 False {
     0
 }
@@ -51,13 +69,27 @@ OnOtherGhostTalk {
         correspondence = IARRAY()
         correspondence ,= 0
         _ = Parse(reference[4])
-        _ret = Translate
+        translation_list = IARRAY()
+        if from == 'en' || to == 'en' {
+            translation_list ,= "%(from)-%(to)"
+        }
+        else {
+            translation_list ,= "%(from)-en"
+            translation_list ,= "en-%(to)"
+        }
+        _ret = Translate(translation_list[0])
+        translation_list[0] = IARRAY()
     }
 }
 
 OnSecondChange {
     _result = TOINT(FUNCTIONEX('saori/call_translator.dll', 'result'))
     if _result == -1 {
+        return
+    }
+    if ARRAYSIZE(translation_list) {
+        _ = Translate(translation_list[0])
+        translation_list[0] = IARRAY()
         return
     }
     for _i = 0; _i < _result; _i++ {
@@ -223,7 +255,7 @@ Translate {
     foreach strict_correspondence; _c {
         _text ,= parse_data[_c]
     }
-    _path = ConfigPath('ja-en')
+    _path = ConfigPath(_argv[0])
     _result = FUNCTIONEX('saori/call_translator.dll', 'call', _path, _text)
     _result
     return
