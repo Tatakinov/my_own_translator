@@ -60,7 +60,7 @@ OnMenu {
 OnSelectTarget {
     _s = '\_q\0'
     foreach ghost_list; _g {
-        _g = REPLACE(_g, ''', '''')
+        _g = REPLACE(_g, '"', '""')
         _s += "\q[""%(_g)"",OnMenu,Target,""%(_g)""]\n"
     }
     _s
