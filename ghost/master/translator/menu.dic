@@ -101,38 +101,42 @@ OnHowToDownload {
     if lang == 'Japanese' || lang == 'japanese' || lang == 'ja' {
         '1. https://mozilla.github.io/translations/ へアクセス\n'
         --
-        '2. Firefox Models をクリック\n'
+        '2. Model Registry をクリック\n'
         --
-        '3. 翻訳したい言語のところまでスクロール\n'
+        "3. Filterに%(_lang)と入力\n"
         --
-        "4. %(_lang) をクリック\n"
+        '4. Show をクリックしてExportedの数字をクリック\n'
         --
         '5. model.*.bin(.gz) をダウンロード\n'
         --
-        '6-1. vocab.*.spm(.gz) をダウンロード\n'
+        '6. lex.*.bin(.gz) をダウンロード\n'
         --
-        '6-2. もしくは、srcvocab.*.spm(.gz) と trgvocab.*.spm(.gz) をダウンロード\n'
+        '7-1. vocab.*.spm(.gz) をダウンロード\n'
         --
-        '7. ダウンロードした *.gz を展開\n'
+        '7-2. もしくは、srcvocab.*.spm(.gz) と trgvocab.*.spm(.gz) をダウンロード\n'
         --
-        "8. model.*.bin を /path/to/my_own_translator/ghost/master/model/%(_lang)/model.bin へコピー\n"
+        '8. ダウンロードした *.gz を展開\n'
         --
-        "9-1. vocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm へ、さらにvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm へコピー\n"
+        "9. model.*.bin を /path/to/my_own_translator/ghost/master/model/%(_lang)/model.bin へコピー\n"
         --
-        "9-2. もしくは、srcvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm へ、trgvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm へコピー\n"
+        "10. lex.*.bin を /path/to/my_own_translator/ghost/master/model/%(_lang)/lex.bin へコピー\n"
         --
-        "10. /path/to/my_own_translator/ghost/master/config.yml を /path/to/my_own_translator/model/%(_lang)/config.yml へコピー\n"
+        "11-1. vocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm へ、さらにvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm へコピー\n"
+        --
+        "11-2. もしくは、srcvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm へ、trgvocab.*.spm を /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm へコピー\n"
+        --
+        "12. /path/to/my_own_translator/ghost/master/config.yml を /path/to/my_own_translator/model/%(_lang)/config.yml へコピー\n"
         --
         '\nクリックで閉じる\x'
     }
     else {
         '1. Access https://mozilla.github.io/translations/\n'
         --
-        '2. Click Firefox Models\n'
+        '2. Click Model Registry\n'
         --
-        '3. Scroll to language you want to translate\n'
+        "3. input %(_lang) to Filter\n
         --
-        "4. Click %(_lang)\n"
+        '4. Click Show and number located Exported\n'
         --
         '5. Download model.*.bin(.gz)\n'
         --
