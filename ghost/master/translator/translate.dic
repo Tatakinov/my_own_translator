@@ -83,7 +83,7 @@ OnOtherGhostTalk {
 }
 
 OnSecondChange {
-    _result = TOINT(FUNCTIONEX('saori/call_translator.dll', 'result'))
+    _result = TOINT(FUNCTIONEX('call_translator.dll', 'result'))
     if _result == -1 {
         return
     }
@@ -256,7 +256,7 @@ Translate {
         _text ,= parse_data[_c]
     }
     _path = ConfigPath(_argv[0])
-    _result = FUNCTIONEX('saori/call_translator.dll', 'call', _path, _text)
+    _result = FUNCTIONEX('call_translator.dll', 'call', _path, _text)
     _result
     return
 }
