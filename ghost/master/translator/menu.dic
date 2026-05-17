@@ -95,7 +95,7 @@ OnSelectTo {
 }
 
 OnHowToDownload {
-    _lang = _argv[0]
+    _lang = reference[0]
     '\_q\0'
     --
     if lang == 'Japanese' || lang == 'japanese' || lang == 'ja' {
@@ -136,19 +136,23 @@ OnHowToDownload {
         --
         '5. Download model.*.bin(.gz)\n'
         --
-        '6-1. Download vocab.*.spm(.gz)\n'
+        '6. Download lex.*.bin(.gz)\n'
         --
-        '6-2. otherwise, Download srcvocab.*.spm(.gz) and trgvocab.*.spm(.gz)\n'
+        '7-1. Download vocab.*.spm(.gz)\n'
         --
-        '7. Expand *.gz you downloaded\n'
+        '7-2. otherwise, Download srcvocab.*.spm(.gz) and trgvocab.*.spm(.gz)\n'
         --
-        "8. Copy model.*.bin to /path/to/my_own_translator/ghost/master/model/%(_lang)/model.bin\n"
+        '8. Expand *.gz you downloaded\n'
         --
-        "9-1. Copy vocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm and Copy vocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm\n"
+        "9. Copy model.*.bin to /path/to/my_own_translator/ghost/master/model/%(_lang)/model.bin\n"
         --
-        "9-2. otherwise, Copy srcvocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm and Copy trgvocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm\n"
+        "10. Copy lex.*.bin to /path/to/my_own_translator/ghost/master/model/%(_lang)/lex.bin\n"
         --
-        "10. Copy /path/to/my_own_translator/ghost/master/config.yml to /path/to/my_own_translator/model/%(_lang)/config.yml\n"
+        "11-1. Copy vocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm and Copy vocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm\n"
+        --
+        "11-2. otherwise, Copy srcvocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/src.spm and Copy trgvocab.*.spm to /path/to/my_own_translator/ghost/master/model/%(_lang)/trg.spm\n"
+        --
+        "12. Copy /path/to/my_own_translator/ghost/master/config.yml to /path/to/my_own_translator/model/%(_lang)/config.yml\n"
         --
         '\nClick to close\x'
     }
