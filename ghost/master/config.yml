@@ -1,0 +1,4 @@
+models: [model.bin]
+vocabs: [src.spm, trg.spm]
+shortlist: [lex.bin, false]
+mini-batch-words: 1024
