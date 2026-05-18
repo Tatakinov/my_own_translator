@@ -1,5 +1,5 @@
 Language {
-    ('ja', 'en', 'zh-CN', 'zh-TW', 'ko', 'de', 'ru')
+    ('ja', 'en', 'zh', 'zh-hant', 'ko', 'de', 'ru')
 }
 
 OnNOP {
@@ -42,13 +42,13 @@ OnMenu {
     --
     '\n'
     --
+    _str = ''
     foreach Validate; _x {
-        "Caution: model %(_x) not found. Please download it.\n"
-        --
-        "\q[How to download,OnHowToDownload,%(_x)]\n"
-        --
-        '\n'
+        _str += "Caution: model %(_x) not found. Please download it.\n"
+        _str += "\![*]\q[How to download,OnHowToDownload,%(_x)]\n"
+        _str += '\n'
     }
+    _str
     --
     '\n'
     --
@@ -134,7 +134,7 @@ OnHowToDownload {
         --
         '2. Click Model Registry\n'
         --
-        "3. input %(_lang) to Filter\n
+        "3. input %(_lang) to Filter\n"
         --
         '4. Click Show and number located Exported\n'
         --
