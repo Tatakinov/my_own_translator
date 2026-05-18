@@ -1,8 +1,8 @@
 OnInitialize {
-    if !ISVAR('from') {
+    if !ISVAR('from') || ASEARCH(from, Language) == -1 {
         from = "ja"
     }
-    if !ISVAR('to') {
+    if !ISVAR('to') || ASEARCH(to, Language) == -1 {
         to = "en"
     }
     target = ""
@@ -22,5 +22,5 @@ OnDestroy {
 }
 
 OnLanguageChange {
-    lang = _argv[0]
+    lang = reference[0]
 }
