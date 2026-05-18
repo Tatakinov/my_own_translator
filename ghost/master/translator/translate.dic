@@ -1,3 +1,11 @@
+True {
+    1
+}
+
+False {
+    0
+}
+
 ConfigPath {
     "%(SHIORI3FW.Path)model/%(_argv[0])/config.yml"
 }
@@ -20,8 +28,14 @@ Validate {
     _ret
 }
 
-False {
-    0
+IsSignChar {
+    _code = _argv[0]
+    if _code >= 0x2500 && _code < 0x2580 {
+        True
+        return
+    }
+    False
+    return
 }
 
 Generate {
@@ -85,6 +99,10 @@ OnOtherGhostTalk {
 OnSecondChange {
     _result = TOINT(FUNCTIONEX('call_translator.dll', 'result'))
     if _result == -1 {
+        return
+    }
+    if _result == 0 {
+        "Error!"
         return
     }
     if ARRAYSIZE(translation_list) {
@@ -179,7 +197,7 @@ Parse {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _ref = Max(_ref, _index) + 1
             parse_data[_index] += Generate(_ref)
-            parse_data[_ref] = "\q[%(Generate(_ref + 1)),OnKeep]"
+            parse_data[_ref] = "\q[""%(Generate(_ref + 1))"",OnKeep]"
             _ref += 1
             parse_data[_ref] = RE_GETSTR[1]
             correspondence ,= _ref
@@ -217,6 +235,28 @@ Parse {
         _chr = SUBSTR(_script, 0, 1)
         parse_data[_index] += '\' + _chr
         _script = SUBSTR(_script, 1, STRLEN(_script))
+    }
+    _size = ARRAYSIZE(parse_data)
+    for _i = 0; _i < _size; _i++ {
+        _line = parse_data[_i]
+        _len = STRLEN(_line)
+        _list = IARRAY()
+        _pos = -1
+        for _j = 0; _j < _len; _j++ {
+            _code = CHRCODE(_line, _j)
+            if IsSignChar(_code) && _pos < 0 {
+                _pos = _j
+            }
+            elseif !IsSignChar(_code) && _pos >= 0 {
+                _list ,= SUBSTR(_line, _pos, _j - _pos)
+                _pos = -1
+            }
+        }
+        foreach _list; _x {
+            _line = REPLACE(_line, _x, Generate(ARRAYSIZE(parse_data)), 1)
+            parse_data ,= _x
+        }
+        parse_data[_i] = _line
     }
     return
 }
