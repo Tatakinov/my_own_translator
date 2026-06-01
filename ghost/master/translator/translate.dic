@@ -310,7 +310,6 @@ Build {
     for _i = 1; _i < ARRAYSIZE(parse_data); _i++ {
         parse_data[0] = RE_REPLACE(parse_data[0], RegGenerate(_i), parse_data[_i])
     }
-    // because of Summarize
     parse_data[0]
     return
 }
