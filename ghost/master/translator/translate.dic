@@ -105,13 +105,13 @@ OnSecondChange {
         "Error!"
         return
     }
+    for _i = 0; _i < _result; _i++ {
+        parse_data[strict_correspondence[_i]] = valueex[_i]
+    }
     if ARRAYSIZE(translation_list) {
         _ = Translate(translation_list[0])
         translation_list[0] = IARRAY()
         return
-    }
-    for _i = 0; _i < _result; _i++ {
-        parse_data[strict_correspondence[_i]] = valueex[_i]
     }
     _translated = Build
     '\_q' + _translated + '\_q'
