@@ -46,6 +46,7 @@ OnMenu {
     foreach Validate; _x {
         _str += "Caution: model %(_x) not found. Please download it.\n"
         _str += "\![*]\q[How to download,OnHowToDownload,%(_x)]\n"
+        _str += '\![*]\q[Detailed description,OnJump]\n'
         _str += '\n'
     }
     _str
@@ -160,4 +161,8 @@ OnHowToDownload {
         --
         '\nClick to close\x'
     }
+}
+
+OnJump {
+    '\j[https://tatakinov.github.io/my_own_translator/index.html]'
 }
