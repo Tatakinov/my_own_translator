@@ -9,6 +9,7 @@ kero.name,None
 
 craftman,tatakinov
 craftmanw,タタキノフ
+craftmanurl,https://tatakinov.github.io/
 
 shiori,yaya.dll
 
