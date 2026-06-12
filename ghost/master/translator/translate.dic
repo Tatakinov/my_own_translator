@@ -64,6 +64,54 @@ Max {
     }
 }
 
+OnRaiseChoice {
+    Raise('OnChoiceSelectEx', reference)
+}
+
+OnRaiseAnchor {
+    Raise('OnAnchorSelectEx', reference)
+}
+
+Raise {
+    if !target {
+        return
+    }
+    _type = _argv[0]
+    _argv[0] = IARRAY()
+    _label = label_correspondence[TOINT(_argv[0])]
+    _argv[0] = IARRAY()
+    _event = _argv[0]
+    _argv[0] = IARRAY()
+    if STRSTR(_event, 'script:', 0) == 0 {
+        return
+    }
+    _on = STRSTR(_event, 'On', 0) == 0
+    _str = "\![raiseother,%(target_ghost_name)"
+    if _on {
+        _str += ",%(_event)"
+        foreach _argv; _arg {
+            _str += ",%(_arg)"
+        }
+    }
+    else {
+        _str += ",%(_type),%(label),%(_event)"
+        foreach _argv; _arg {
+            _str += ",%(_arg)"
+        }
+    }
+    _str += ']'
+    _str
+}
+
+OnRaiseOtherFailure {
+    if reference[0] != '204' {
+        return
+    }
+    if reference[2] == 'OnChoiceSelectEx' || reference[2] == 'OnAnchorSelectEx' {
+        "\![raiseother,%(reference[1]),%(SUBSTR(reference[2], 0, 14)),%(reference[4])]"
+    }
+}
+
 OnKeep {
     '\C'
 }
@@ -91,12 +139,15 @@ OnOtherGhostTalk {
             translation_list ,= "%(from)-en"
             translation_list ,= "en-%(to)"
         }
-        _ret = Translate(translation_list[0])
+        _ret += Translate(translation_list[0])
         translation_list[0] = IARRAY()
     }
 }
 
 OnSecondChange {
+    if ARRAYSIZE(strict_correspondence) == 0 {
+        return
+    }
     _result = TOINT(FUNCTIONEX('call_translator.dll', 'result'))
     if _result == -1 {
         return
@@ -119,6 +170,8 @@ OnSecondChange {
 }
 
 Parse {
+    label_correspondence = IARRAY()
+    _label_index = 0
     _ref = 0
     _script = _argv[0]
     _index_stack = IARRAY()
@@ -192,24 +245,42 @@ Parse {
             continue
         }
         // qタグは選択肢を翻訳する。
-        if RE_SEARCH(_script, "^\\q\[((?:%(Quote)|\\\\|\\\]|(?!%(Quote)|\\\\|\\\]|\]|,).)*)%(InParentheses)\]") {
+        if RE_SEARCH(_script, "^\\q\[((?:%(Quote)|\\\\|\\\]|(?!%(Quote)|\\\\|\\\]|\]|,).)*)(%(InParentheses))\]") {
             // qタグ内のダブルクオートとかエスケープとかの処理は面倒いのでやってない。
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _ref = Max(_ref, _index) + 1
             parse_data[_index] += Generate(_ref)
-            parse_data[_ref] = "\q[""%(Generate(_ref + 1))"",OnKeep]"
+            if allow_selection {
+                parse_data[_ref] = "\q[""%(Generate(_ref + 1))"",OnRaiseChoice,%(_label_index++)%(RE_GETSTR[2])]"
+                label_correspondence ,= Generate(_ref + 1)
+            }
+            else {
+                parse_data[_ref] = "\q[""%(Generate(_ref + 1))"",OnKeep]"
+            }
             _ref += 1
             parse_data[_ref] = RE_GETSTR[1]
             correspondence ,= _ref
             continue
         }
         // \__q、\_aは内部を翻訳する。
-        if RE_SEARCH(_script, "^\\(__q|_a)%(_p)") {
+        if RE_SEARCH(_script, "^\\(__q|_a)\[(%(InParentheses))\]") {
             _script = SUBSTR(_script, RE_GETLEN[0], STRLEN(_script))
             _sentinel = "\" + RE_GETSTR[1]
             _ref = Max(_ref, _index) + 1
             parse_data[_index] += Generate(_ref)
-            parse_data[_ref] = "%(_sentinel)[OnKeep]%(Generate(_ref + 1))%(_sentinel)"
+            if allow_selection {
+                if _sentinel == '\__q' {
+                    parse_data[_ref] = "%(_sentinel)[OnRaiseChoice,%(_label_index++),%(RE_GETSTR[2])]%(Generate(_ref + 1))%(_sentinel)"
+                    label_correspondence ,= Generate(_ref + 1)
+                }
+                elseif _sentinel == '\_a' {
+                    parse_data[_ref] = "%(_sentinel)[OnRaiseAnchor,%(_label_index++),%(RE_GETSTR[2])]%(Generate(_ref + 1))%(_sentinel)"
+                    label_correspondence ,= Generate(_ref + 1)
+                }
+            }
+            else {
+                parse_data[_ref] = "%(_sentinel)[OnKeep]%(Generate(_ref + 1))%(_sentinel)"
+            }
             _ref += 1
             correspondence ,= _ref
             _index_stack ,= _index
@@ -257,6 +328,12 @@ Parse {
             parse_data ,= _x
         }
         parse_data[_i] = _line
+    }
+    // build choice/anchor label
+    for _i = 0; _i < _label_index; _i++ {
+        for _j = 1; _j < ARRAYSIZE(parse_data); _j++ {
+            label_correspondence[_i] = RE_REPLACE(label_correspondence[_i], RegGenerate(_j), parse_data[_j])
+        }
     }
     return
 }

@@ -22,6 +22,9 @@ OnMenu {
         when 'To' {
             to = reference[1]
         }
+        when 'AllowSelection' {
+            allow_selection = TOINT(reference[1])
+        }
     }
     if target {
         'Target: ' + target + ' / \q[Stop translate,OnMenu,Target,]\n'
@@ -42,6 +45,15 @@ OnMenu {
     --
     '\n'
     --
+    if allow_selection {
+        '\![*] \q[Disallow selection from choices and anchors,OnMenu,AllowSelection,0]\n'
+    }
+    else {
+        '\![*] \q[Allow selection from choices and anchors,OnMenu,AllowSelection,1]\n'
+    }
+    --
+    '\n'
+    --
     _str = ''
     foreach Validate; _x {
         _str += "Caution: model %(_x) not found. Please download it.\n"
@@ -58,11 +70,22 @@ OnMenu {
     '\_q'
 }
 
+OnGetProperty {
+    _n = REPLACE(reference[0], '"', '""')
+    "\![get,property,OnGetTargetGhostName,""ghostlist(%(_n)).name"",""ghostlist(%(_n)).sakuraname""]"
+}
+
+OnGetTargetGhostName {
+    target_ghost_name = reference[0]
+    _n = REPLACE(reference[1], '"', '""')
+    "\![raise,OnMenu,Target,""%(_n)""]"
+}
+
 OnSelectTarget {
     _s = '\_q\0'
     foreach ghost_list; _g {
         _g = REPLACE(_g, '"', '""')
-        _s += "\q[""%(_g)"",OnMenu,Target,""%(_g)""]\n"
+        _s += "\q[""%(_g)"",OnGetProperty,""%(_g)""]\n"
     }
     _s
     --

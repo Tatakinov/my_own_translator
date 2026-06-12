@@ -15,8 +15,10 @@ OnBoot {
 OnDestroy {
     ERASEVAR('ghost_list')
     ERASEVAR('target')
+    ERASEVAR('target_ghost_name')
     ERASEVAR('correspondence')
     ERASEVAR('strict_correspondence')
+    ERASEVAR('label_correspondence')
     ERASEVAR('translation_list')
     ERASEVAR('lang')
 }
